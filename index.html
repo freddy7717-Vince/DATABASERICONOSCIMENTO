@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NUCLEO INTEL Database/Test Riconoscimento v1.0</title>
+    <title>NUCLEO INTEL Database/Test Riconoscimento v1.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -50,6 +50,7 @@
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-full flex flex-col font-sans antialiased select-none">
 
+    <!-- Login Overlay -->
     <div id="login-overlay" class="fixed inset-0 bg-gray-950 z-50 flex items-center justify-center p-4">
         <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-5 text-center">
             <div class="bg-military-600/20 text-military-300 border border-military-600/40 w-14 h-14 mx-auto rounded-full flex items-center justify-center text-xl">
@@ -75,6 +76,7 @@
         </div>
     </div>
 
+    <!-- Header -->
     <header class="bg-gray-800 border-b border-gray-700 shadow-md sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-start">
@@ -83,7 +85,7 @@
                         <i class="fa-solid fa-crosshairs text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold tracking-wide text-white">NUCLEO INTEL <span class="text-xs font-normal text-military-300 bg-military-900 px-2 py-0.5 rounded border border-military-600 ml-1">v1.0</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-wide text-white">NUCLEO INTEL <span class="text-xs font-normal text-military-300 bg-military-900 px-2 py-0.5 rounded border border-military-600 ml-1">v1.2</span></h1>
                         <p class="text-[11px] sm:text-xs text-gray-400">Database Condiviso & Test Riconoscimento</p>
                     </div>
                 </div>
@@ -149,11 +151,11 @@
             </div>
 
             <!-- Flashcard Container -->
-            <div id="flashcard-container" class="relative w-full h-[420px] sm:h-[460px] cursor-pointer perspective-1000" onclick="flipCard()">
+            <div id="flashcard-container" class="relative w-full h-[450px] sm:h-[490px] cursor-pointer perspective-1000" onclick="flipCard()">
                 <div id="card-inner" class="relative w-full h-full duration-300 transform-style-3d shadow-2xl rounded-2xl">
-                    <!-- Front (Domanda sopra e Foto sotto) -->
+                    <!-- Front -->
                     <div class="absolute inset-0 w-full h-full bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backface-hidden overflow-hidden">
-                        <div class="flex justify-between items-center text-xs text-gray-400">
+                        <div class="flex justify-between items-center text-xs text-gray-400 shrink-0">
                             <div class="flex items-center space-x-2">
                                 <span id="card-category" class="bg-military-800 text-military-100 px-2.5 py-1 rounded font-medium border border-military-600">Categoria</span>
                                 <div id="card-status-badge" class="cursor-pointer hover:opacity-80 transition" title="Clicca per cambiare stato" onclick="event.stopPropagation(); toggleCurrentCardStatus();"></div>
@@ -166,27 +168,43 @@
                             </div>
                         </div>
                         
-                        <!-- Layout verticale: domanda sopra e foto sotto -->
-                        <div class="my-auto flex flex-col items-center justify-center space-y-3 overflow-y-auto max-h-[320px] sm:max-h-[350px] px-1 py-1">
+                        <!-- Layout verticale: domanda sopra e carosello foto sotto -->
+                        <div class="my-auto flex flex-col items-center justify-center space-y-2.5 overflow-y-auto max-h-[350px] sm:max-h-[380px] px-1 py-1">
                             <h2 id="card-question" class="text-base sm:text-lg font-semibold text-white text-center leading-snug">Caricamento...</h2>
-                            <div id="card-img-front-container" class="hidden flex justify-center w-full">
-                                <img id="card-img-front" src="" alt="Intel Fronte" class="max-h-48 sm:max-h-60 w-auto max-w-full rounded-lg border border-gray-700 object-contain shadow bg-gray-900 cursor-zoom-in" onclick="event.stopPropagation(); openZoomModal();" title="Clicca per ingrandire">
+                            
+                            <!-- Multi-Image Gallery Container -->
+                            <div id="card-img-front-container" class="hidden flex flex-col items-center w-full space-y-2">
+                                <div class="relative flex items-center justify-center w-full group">
+                                    <button id="prev-img-btn" onclick="event.stopPropagation(); changeCardImage(-1);" class="hidden absolute left-1 sm:left-4 z-10 bg-gray-900/85 hover:bg-gray-700 text-white w-8 h-8 rounded-full flex items-center justify-center border border-gray-600 shadow-lg transition" title="Immagine precedente">
+                                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                                    </button>
+                                    
+                                    <img id="card-img-front" src="" alt="Intel Fronte" class="max-h-48 sm:max-h-60 w-auto max-w-full rounded-lg border border-gray-700 object-contain shadow bg-gray-900 cursor-zoom-in" onclick="event.stopPropagation(); openZoomModal();" title="Clicca per ingrandire">
+                                    
+                                    <button id="next-img-btn" onclick="event.stopPropagation(); changeCardImage(1);" class="hidden absolute right-1 sm:right-4 z-10 bg-gray-900/85 hover:bg-gray-700 text-white w-8 h-8 rounded-full flex items-center justify-center border border-gray-600 shadow-lg transition" title="Immagine successiva">
+                                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                                    </button>
+
+                                    <span id="card-img-counter" class="hidden absolute bottom-2 right-2 sm:right-6 bg-gray-950/85 text-gray-200 text-[10px] font-semibold px-2 py-0.5 rounded border border-gray-700">1 / 1</span>
+                                </div>
+                                
+                                <!-- Miniatura Indicatori -->
+                                <div id="card-img-thumbnails" class="hidden flex items-center justify-center space-x-1.5 overflow-x-auto max-w-full py-0.5 px-2" onclick="event.stopPropagation()"></div>
                             </div>
                         </div>
 
-                        <div class="text-center text-[11px] text-gray-500">
+                        <div class="text-center text-[11px] text-gray-500 shrink-0">
                             Elemento <span id="current-index">1</span> di <span id="total-cards">1</span> (Tocca per girare)
                         </div>
                     </div>
                     
-                    <!-- Back (Titolo rosso centrato e grassetto + Testo bianco giustificato e scrollabile su mobile) -->
+                    <!-- Back -->
                     <div class="absolute inset-0 w-full h-full bg-gray-800 border border-military-600 rounded-2xl p-4 sm:p-6 flex flex-col justify-between backface-hidden rotate-y-180 overflow-hidden">
                         <div class="flex justify-between items-center text-xs text-military-300 shrink-0">
                             <span>Dettagli e Specifiche</span>
                             <span class="text-[11px]">Retro</span>
                         </div>
                         
-                        <!-- Contenitore scrollabile ottimizzato per mobile con touch-pan-y -->
                         <div class="flex-1 overflow-y-auto my-2 px-2 py-1 space-y-2.5 touch-pan-y" style="-webkit-overflow-scrolling: touch;" onclick="event.stopPropagation()">
                             <h4 id="card-answer-title" class="text-base sm:text-xl md:text-2xl font-extrabold text-red-500 text-center leading-snug"></h4>
                             <p id="card-answer-text" class="text-xs sm:text-sm text-white text-justify leading-relaxed px-1"></p>
@@ -250,9 +268,21 @@
 
                 <div class="space-y-3 flex flex-col items-center">
                     <h3 id="quiz-question" class="text-base sm:text-lg font-medium text-white text-center">Domanda del quiz...</h3>
-                    <div id="quiz-img-container" class="hidden flex justify-center w-full">
-                        <img id="quiz-img" src="" alt="Quiz Intel" class="max-h-48 w-auto max-w-full rounded-lg border border-gray-700 object-contain shadow bg-gray-900">
+                    
+                    <!-- Multi-Image Gallery in Quiz -->
+                    <div id="quiz-img-container" class="hidden flex flex-col items-center w-full space-y-2">
+                        <div class="relative flex items-center justify-center w-full">
+                            <button id="quiz-prev-img-btn" onclick="changeQuizImage(-1)" class="hidden absolute left-2 sm:left-6 z-10 bg-gray-900/85 hover:bg-gray-700 text-white w-8 h-8 rounded-full flex items-center justify-center border border-gray-600 shadow-lg transition">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <img id="quiz-img" src="" alt="Quiz Intel" class="max-h-48 sm:max-h-56 w-auto max-w-full rounded-lg border border-gray-700 object-contain shadow bg-gray-900">
+                            <button id="quiz-next-img-btn" onclick="changeQuizImage(1)" class="hidden absolute right-2 sm:right-6 z-10 bg-gray-900/85 hover:bg-gray-700 text-white w-8 h-8 rounded-full flex items-center justify-center border border-gray-600 shadow-lg transition">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                            <span id="quiz-img-counter" class="hidden absolute bottom-2 right-2 sm:right-8 bg-gray-950/85 text-gray-200 text-[10px] font-semibold px-2 py-0.5 rounded border border-gray-700">1 / 1</span>
+                        </div>
                     </div>
+
                     <div id="quiz-options" class="grid grid-cols-1 gap-2.5 pt-1 w-full">
                         <!-- Opzioni dinamiche -->
                     </div>
@@ -319,10 +349,17 @@
                                 <textarea id="input-question" required rows="3" placeholder="Inserisci il quesito..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs sm:text-sm focus:outline-none focus:border-military-600"></textarea>
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Immagine Fronte (Galleria / Fotocamera)</label>
-                                <input type="file" id="input-img-front-file" accept="image/*" onchange="previewLocalImage(event)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-1.5 text-xs text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-semibold file:bg-military-700 file:text-white">
-                                <input type="hidden" id="input-img-front-data">
-                                <p id="file-name-front" class="text-[10px] text-gray-500 mt-0.5">Nessun file selezionato</p>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider">Immagini Fronte (Max 100 MB / item)</label>
+                                    <button type="button" id="clear-images-btn" onclick="clearFormImages()" class="hidden text-[10px] text-red-400 hover:text-red-300 underline">Rimuovi tutte</button>
+                                </div>
+                                <input type="file" id="input-img-front-file" accept="image/*" multiple onchange="previewLocalImages(event)" class="w-full bg-gray-900 border border-gray-700 rounded-lg p-1.5 text-xs text-gray-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[11px] file:font-semibold file:bg-military-700 file:text-white cursor-pointer">
+                                <div class="flex justify-between items-center mt-1">
+                                    <p id="file-name-front" class="text-[10px] text-gray-400">Nessuna immagine selezionata (fino a 100 MB)</p>
+                                    <span id="form-size-badge" class="text-[10px] font-mono text-military-300 bg-gray-900 px-1.5 py-0.5 rounded border border-gray-700">0.00 / 100 MB</span>
+                                </div>
+                                <!-- Grid anteprima immagini caricate nel form -->
+                                <div id="form-images-preview" class="grid grid-cols-4 sm:grid-cols-5 gap-2 mt-2 empty:hidden"></div>
                             </div>
                         </div>
 
@@ -333,14 +370,14 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Testo Specifiche (Giustificato - Retro)</label>
-                                <textarea id="input-answer-text" required rows="3" placeholder="Inserisci i dettagli tecnici..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs sm:text-sm focus:outline-none focus:border-military-600"></textarea>
+                                <textarea id="input-answer-text" required rows="5" placeholder="Inserisci i dettagli tecnici..." class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2 text-white text-xs sm:text-sm focus:outline-none focus:border-military-600"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex justify-end space-x-2 pt-2">
                         <button type="button" id="cancel-edit" onclick="resetForm()" class="hidden bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition">Annulla</button>
-                        <button type="submit" class="bg-military-600 hover:bg-military-700 text-white px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition shadow">Pubblica nel Database Cloud</button>
+                        <button type="submit" id="submit-card-btn" class="bg-military-600 hover:bg-military-700 text-white px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition shadow">Pubblica nel Database Cloud</button>
                     </div>
                 </form>
             </div>
@@ -360,13 +397,13 @@
     </main>
 
     <footer class="bg-gray-800 border-t border-gray-700 text-center py-2.5 px-4 text-xs text-gray-400 shadow-inner mt-auto fixed bottom-0 left-0 right-0 z-30">
-        <span>Versione: 1.0 — Creata da <strong class="text-gray-200">Vincenzo PELLEGRINO</strong></span>
+        <span>Versione: 1.2 — Creata da <strong class="text-gray-200">Vincenzo PELLEGRINO</strong></span>
     </footer>
 
     <!-- Custom Zoom Modal Dialog -->
-    <div id="zoom-modal" class="fixed inset-0 bg-black/85 z-50 hidden flex flex-col items-center justify-center p-3 sm:p-6">
-        <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-2xl w-full max-h-[92vh] flex flex-col p-4 sm:p-6 shadow-2xl relative overflow-y-auto">
-            <button onclick="closeZoomModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition shadow">
+    <div id="zoom-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex flex-col items-center justify-center p-3 sm:p-6">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col p-4 sm:p-6 shadow-2xl relative overflow-y-auto">
+            <button onclick="closeZoomModal()" class="absolute top-3 right-3 z-20 text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center transition shadow">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
             <div id="zoom-content" class="space-y-4 my-auto text-center pt-2">
@@ -396,13 +433,17 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const MAX_ITEM_BYTES = 100 * 1024 * 1024; // 100 MB per singolo item
+        const FIRESTORE_CHUNK_SIZE = 700 * 1024;  // 700 KB per chunk su Firestore (limite documento 1MB)
 
         const defaultCards = [
             {
                 id: '1',
                 category: 'Guidata & Missilistica',
                 question: 'Cosa si intende per guida radar semi-attiva (SARH)?',
+                images: [],
                 imgFront: '',
                 answerTitle: 'Guida Radar Semi-Attiva (SARH)',
                 answerText: 'Il sistema d\'arma riceve l\'eco radar riflesso sul bersaglio ma illuminato da una sorgente emittente esterna.'
@@ -411,6 +452,7 @@
                 id: '2',
                 category: 'Artiglieria & Balistica',
                 question: 'Qual è la differenza fondamentale tra cannone e obice?',
+                images: [],
                 imgFront: '',
                 answerTitle: 'Cannone vs Obice',
                 answerText: 'Il cannone ha una canna lunga e rigata per traiettorie tese; l\'obice ha una canna più corta per tiri parabolici indiretti.'
@@ -419,6 +461,7 @@
                 id: '3',
                 category: 'Sistemi Navali',
                 question: 'A cosa serve il sistema CIWS (Close-In Weapon System)?',
+                images: [],
                 imgFront: '',
                 answerTitle: 'Sistema di Difesa CIWS',
                 answerText: 'È un sistema di difesa di punto automatico e a cortissimo raggio per neutralizzare missili in arrivo.'
@@ -427,6 +470,7 @@
 
         let cards = [];
         let currentIndex = 0;
+        let currentImageIndex = 0;
         let isFlipped = false;
         let cardStatus = JSON.parse(localStorage.getItem('nucleo_intel_status')) || {};
 
@@ -434,22 +478,114 @@
         let currentStudyStatus = 'ALL';
         let quizQuestions = [];
         let quizIndex = 0;
+        let quizImageIndex = 0;
         let quizScore = 0;
         let quizAnswered = false;
+
+        // Array temporaneo per gestire le immagini multiple nel form di creazione/modifica
+        let formImages = [];
 
         let db = null;
         let auth = null;
         let user = null;
 
+        /**
+         * Gestione IndexedDB per archiviazione locale ad alta capacità (supporta centinaia di MB / GB)
+         * superando il limite di 5MB di localStorage.
+         */
+        const IDB_NAME = 'NucleoIntelHighCapDB';
+        const IDB_STORE = 'cards_store';
+
+        function openLocalIDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(IDB_NAME, 1);
+                req.onupgradeneeded = (e) => {
+                    const idb = e.target.result;
+                    if (!idb.objectStoreNames.contains(IDB_STORE)) {
+                        idb.createObjectStore(IDB_STORE, { keyPath: 'id' });
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function saveCardsToLocalIDB(cardsArray) {
+            try {
+                const idb = await openLocalIDB();
+                return new Promise((resolve, reject) => {
+                    const tx = idb.transaction(IDB_STORE, 'readwrite');
+                    const store = tx.objectStore(IDB_STORE);
+                    store.clear();
+                    cardsArray.forEach(c => store.put(c));
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            } catch (err) {
+                console.warn("Fallback su localStorage:", err);
+                try {
+                    localStorage.setItem('nucleo_intel_cards', JSON.stringify(cardsArray));
+                } catch (lsErr) {
+                    console.error("Capacità localStorage esaurita:", lsErr);
+                }
+            }
+        }
+
+        async function loadCardsFromLocalIDB() {
+            try {
+                const idb = await openLocalIDB();
+                return new Promise((resolve, reject) => {
+                    const tx = idb.transaction(IDB_STORE, 'readonly');
+                    const store = tx.objectStore(IDB_STORE);
+                    const req = store.getAll();
+                    req.onsuccess = () => {
+                        if (req.result && req.result.length > 0) {
+                            resolve(req.result);
+                        } else {
+                            // Migrazione eventuale da vecchio localStorage
+                            const legacy = JSON.parse(localStorage.getItem('nucleo_intel_cards') || 'null');
+                            resolve(legacy || defaultCards);
+                        }
+                    };
+                    req.onerror = () => reject(req.error);
+                });
+            } catch (err) {
+                return JSON.parse(localStorage.getItem('nucleo_intel_cards')) || defaultCards;
+            }
+        }
+
+        /**
+         * Calcola i byte effettivi delle immagini/dati di un item
+         */
+        function getImagesTotalBytes(imagesArray) {
+            if (!Array.isArray(imagesArray)) return 0;
+            return imagesArray.reduce((acc, str) => acc + (typeof str === 'string' ? str.length : 0), 0);
+        }
+
+        function formatMB(bytes) {
+            return (bytes / (1024 * 1024)).toFixed(2);
+        }
+
+        /**
+         * Helper per estrarre sempre un array pulito di immagini da un item
+         */
+        function getCardImages(card) {
+            if (!card) return [];
+            if (Array.isArray(card.images) && card.images.length > 0) {
+                return card.images.filter(img => typeof img === 'string' && img.trim() !== '');
+            }
+            if (typeof card.imgFront === 'string' && card.imgFront.trim() !== '') {
+                return [card.imgFront];
+            }
+            return [];
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
             checkAuthSession();
             
-            // Inserimento del codice richiesto per caricare dati.json
             fetch('./dati.json')
               .then(response => response.json())
               .then(data => {
-                console.log(data);
-                // Usa i dati all'interno della pagina web se presenti
                 if (Array.isArray(data) && data.length > 0) {
                     cards = data;
                     updateCategorySelects();
@@ -457,7 +593,7 @@
                     renderManageList();
                 }
               })
-              .catch(error => console.error('Errore nel caricamento del JSON:', error));
+              .catch(() => {});
 
             await initFirebase();
         });
@@ -534,13 +670,39 @@
             if (!db) return;
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'nucleo-intel-shared-app';
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_cards');
+            const chunksColRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_card_chunks');
 
-            onSnapshot(colRef, (snapshot) => {
-                // Se Firebase ha dati, usiamo quelli; altrimenti lasciamo quelli caricati eventualmente da dati.json
+            onSnapshot(colRef, async (snapshot) => {
                 const cloudCards = [];
+                const promises = [];
+
                 snapshot.forEach((docSnap) => {
-                    cloudCards.push({ id: docSnap.id, ...docSnap.data() });
+                    const data = docSnap.data();
+                    const cardObj = { id: docSnap.id, ...data };
+
+                    // Se l'item utilizza salvataggio suddiviso (oltre 1MB), ricostruisce le immagini dai chunk
+                    if (data.hasChunks) {
+                        const p = getDocs(query(chunksColRef, where('cardId', '==', docSnap.id)))
+                            .then(chunkSnaps => {
+                                const chunksByImg = {};
+                                chunkSnaps.forEach(cs => {
+                                    const cd = cs.data();
+                                    if (!chunksByImg[cd.imgIndex]) chunksByImg[cd.imgIndex] = [];
+                                    chunksByImg[cd.imgIndex][cd.chunkIndex] = cd.data;
+                                });
+                                const rebuiltImages = Object.keys(chunksByImg)
+                                    .sort((a, b) => Number(a) - Number(b))
+                                    .map(k => chunksByImg[k].join(''));
+                                cardObj.images = rebuiltImages;
+                                cardObj.imgFront = rebuiltImages[0] || '';
+                            })
+                            .catch(err => console.error("Errore caricamento chunk immagini:", err));
+                        promises.push(p);
+                    }
+                    cloudCards.push(cardObj);
                 });
+
+                await Promise.all(promises);
 
                 if (cloudCards.length > 0) {
                     cards = cloudCards;
@@ -561,16 +723,17 @@
                 await addDoc(colRef, {
                     category: c.category,
                     question: c.question,
-                    imgFront: c.imgFront,
+                    images: [],
+                    imgFront: '',
                     answerTitle: c.answerTitle,
                     answerText: c.answerText
                 });
             }
         }
 
-        function loadLocalCards() {
+        async function loadLocalCards() {
             if (cards.length === 0) {
-                cards = JSON.parse(localStorage.getItem('nucleo_intel_cards')) || defaultCards;
+                cards = await loadCardsFromLocalIDB();
             }
             updateCategorySelects();
             updateStudyView();
@@ -637,6 +800,7 @@
             currentStudyCategory = document.getElementById('study-category-filter').value;
             currentStudyStatus = document.getElementById('study-status-filter').value;
             currentIndex = 0;
+            currentImageIndex = 0;
             updateStudyView();
         };
 
@@ -649,17 +813,140 @@
             });
         }
 
+        // Cambia immagine nella Flashcard attiva
+        window.changeCardImage = function(step) {
+            const filteredCards = getFilteredCards();
+            if (filteredCards.length === 0) return;
+            const images = getCardImages(filteredCards[currentIndex]);
+            if (images.length <= 1) return;
+
+            currentImageIndex = (currentImageIndex + step + images.length) % images.length;
+            renderStudyCardImages(images);
+        };
+
+        window.selectCardImage = function(idx) {
+            const filteredCards = getFilteredCards();
+            if (filteredCards.length === 0) return;
+            const images = getCardImages(filteredCards[currentIndex]);
+            if (idx >= 0 && idx < images.length) {
+                currentImageIndex = idx;
+                renderStudyCardImages(images);
+            }
+        };
+
+        function renderStudyCardImages(images) {
+            const imgFrontCont = document.getElementById('card-img-front-container');
+            const imgFront = document.getElementById('card-img-front');
+            const prevBtn = document.getElementById('prev-img-btn');
+            const nextBtn = document.getElementById('next-img-btn');
+            const counterBadge = document.getElementById('card-img-counter');
+            const thumbsContainer = document.getElementById('card-img-thumbnails');
+
+            if (images.length === 0) {
+                imgFrontCont.classList.add('hidden');
+                imgFront.src = '';
+                return;
+            }
+
+            if (currentImageIndex >= images.length) currentImageIndex = 0;
+            imgFrontCont.classList.remove('hidden');
+            imgFront.src = images[currentImageIndex];
+
+            if (images.length > 1) {
+                prevBtn.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+                counterBadge.classList.remove('hidden');
+                counterBadge.innerText = `${currentImageIndex + 1} / ${images.length}`;
+                
+                thumbsContainer.classList.remove('hidden');
+                thumbsContainer.innerHTML = images.map((src, idx) => `
+                    <button type="button" onclick="selectCardImage(${idx})" class="w-8 h-8 rounded border-2 overflow-hidden shrink-0 transition ${idx === currentImageIndex ? 'border-military-500 scale-105 shadow' : 'border-gray-700 opacity-60 hover:opacity-100'}">
+                        <img src="${src}" class="w-full h-full object-cover" alt="Miniatura ${idx + 1}">
+                    </button>
+                `).join('');
+            } else {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                counterBadge.classList.add('hidden');
+                thumbsContainer.classList.add('hidden');
+                thumbsContainer.innerHTML = '';
+            }
+        }
+
+        // Zoom Modal con supporto galleria multi-immagine
         window.openZoomModal = function() {
             const filteredCards = getFilteredCards();
             if (filteredCards.length === 0) return;
             const card = filteredCards[currentIndex];
+            const images = getCardImages(card);
+            renderZoomModalContent(card, images);
+            document.getElementById('zoom-modal').classList.remove('hidden');
+        };
+
+        window.changeZoomImage = function(step) {
+            const filteredCards = getFilteredCards();
+            if (filteredCards.length === 0) return;
+            const card = filteredCards[currentIndex];
+            const images = getCardImages(card);
+            if (images.length <= 1) return;
+
+            currentImageIndex = (currentImageIndex + step + images.length) % images.length;
+            renderStudyCardImages(images);
+            renderZoomModalContent(card, images);
+        };
+
+        window.selectZoomImage = function(idx) {
+            const filteredCards = getFilteredCards();
+            if (filteredCards.length === 0) return;
+            const card = filteredCards[currentIndex];
+            const images = getCardImages(card);
+            if (idx >= 0 && idx < images.length) {
+                currentImageIndex = idx;
+                renderStudyCardImages(images);
+                renderZoomModalContent(card, images);
+            }
+        };
+
+        function renderZoomModalContent(card, images) {
             const zoomContent = document.getElementById('zoom-content');
 
             if (!isFlipped) {
+                let galleryHtml = '<p class="text-xs text-gray-500 italic">Nessuna immagine allegata sul fronte</p>';
+                if (images.length > 0) {
+                    const activeSrc = images[currentImageIndex] || images[0];
+                    const navControls = images.length > 1 ? `
+                        <button onclick="changeZoomImage(-1)" class="absolute left-2 sm:left-4 z-10 bg-gray-900/90 hover:bg-gray-700 text-white w-10 h-10 rounded-full flex items-center justify-center border border-gray-600 shadow-xl transition">
+                            <i class="fa-solid fa-chevron-left text-sm"></i>
+                        </button>
+                        <button onclick="changeZoomImage(1)" class="absolute right-2 sm:right-4 z-10 bg-gray-900/90 hover:bg-gray-700 text-white w-10 h-10 rounded-full flex items-center justify-center border border-gray-600 shadow-xl transition">
+                            <i class="fa-solid fa-chevron-right text-sm"></i>
+                        </button>
+                        <span class="absolute bottom-3 right-3 bg-gray-950/90 text-gray-200 text-xs font-semibold px-2.5 py-1 rounded border border-gray-700">Foto ${currentImageIndex + 1} di ${images.length}</span>
+                    ` : '';
+
+                    const thumbsHtml = images.length > 1 ? `
+                        <div class="flex items-center justify-center space-x-2 pt-3 overflow-x-auto max-w-full">
+                            ${images.map((src, idx) => `
+                                <button onclick="selectZoomImage(${idx})" class="w-12 h-12 rounded-lg border-2 overflow-hidden shrink-0 transition ${idx === currentImageIndex ? 'border-military-500 scale-105 shadow-lg' : 'border-gray-700 opacity-50 hover:opacity-100'}">
+                                    <img src="${src}" class="w-full h-full object-cover">
+                                </button>
+                            `).join('')}
+                        </div>
+                    ` : '';
+
+                    galleryHtml = `
+                        <div class="relative flex items-center justify-center pt-2 w-full">
+                            ${navControls}
+                            <img src="${activeSrc}" alt="Fronte Zoom" class="max-h-[58vh] w-auto max-w-full rounded-xl border border-gray-700 object-contain shadow-xl bg-gray-900">
+                        </div>
+                        ${thumbsHtml}
+                    `;
+                }
+
                 zoomContent.innerHTML = `
                     <div class="text-xs text-military-300 font-semibold uppercase tracking-wider">${escapeHtml(card.category)} — Fronte (Ingrandito)</div>
                     <h3 class="text-base sm:text-xl font-bold text-white px-2">${escapeHtml(card.question)}</h3>
-                    ${card.imgFront && card.imgFront.trim() !== '' ? `<div class="flex justify-center pt-2"><img src="${card.imgFront}" alt="Fronte Zoom" class="max-h-[60vh] w-auto max-w-full rounded-xl border border-gray-700 object-contain shadow-xl bg-gray-900"></div>` : '<p class="text-xs text-gray-500 italic">Nessuna immagine allegata sul fronte</p>'}
+                    ${galleryHtml}
                 `;
             } else {
                 zoomContent.innerHTML = `
@@ -668,14 +955,13 @@
                     <p class="text-sm sm:text-base text-white text-justify leading-relaxed px-4 pt-3">${escapeHtml(card.answerText || '')}</p>
                 `;
             }
-
-            document.getElementById('zoom-modal').classList.remove('hidden');
-        };
+        }
 
         window.closeZoomModal = function() {
             document.getElementById('zoom-modal').classList.add('hidden');
         };
 
+        // Quiz Functions
         window.resetQuizScreen = function() {
             document.getElementById('quiz-start-screen').classList.remove('hidden');
             document.getElementById('quiz-active-screen').classList.add('hidden');
@@ -693,6 +979,7 @@
 
             quizQuestions = [...availableCards].sort(() => Math.random() - 0.5).slice(0, Math.min(10, availableCards.length));
             quizIndex = 0;
+            quizImageIndex = 0;
             quizScore = 0;
 
             document.getElementById('quiz-start-screen').classList.add('hidden');
@@ -701,8 +988,45 @@
             loadQuizQuestion();
         };
 
+        window.changeQuizImage = function(step) {
+            const currentQ = quizQuestions[quizIndex];
+            const images = getCardImages(currentQ);
+            if (images.length <= 1) return;
+
+            quizImageIndex = (quizImageIndex + step + images.length) % images.length;
+            renderQuizImage(images);
+        };
+
+        function renderQuizImage(images) {
+            const imgContainer = document.getElementById('quiz-img-container');
+            const imgEl = document.getElementById('quiz-img');
+            const prevBtn = document.getElementById('quiz-prev-img-btn');
+            const nextBtn = document.getElementById('quiz-next-img-btn');
+            const counter = document.getElementById('quiz-img-counter');
+
+            if (images.length > 0) {
+                imgEl.src = images[quizImageIndex];
+                imgContainer.classList.remove('hidden');
+
+                if (images.length > 1) {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.remove('hidden');
+                    counter.classList.remove('hidden');
+                    counter.innerText = `${quizImageIndex + 1} / ${images.length}`;
+                } else {
+                    prevBtn.classList.add('hidden');
+                    nextBtn.classList.add('hidden');
+                    counter.classList.add('hidden');
+                }
+            } else {
+                imgContainer.classList.add('hidden');
+                imgEl.src = '';
+            }
+        }
+
         function loadQuizQuestion() {
             quizAnswered = false;
+            quizImageIndex = 0;
             document.getElementById('quiz-next-btn').classList.add('hidden');
             
             const currentQ = quizQuestions[quizIndex];
@@ -710,15 +1034,8 @@
             document.getElementById('quiz-score-badge').innerText = `Punteggio: ${quizScore}`;
             document.getElementById('quiz-question').innerText = currentQ.question;
 
-            const imgContainer = document.getElementById('quiz-img-container');
-            const imgEl = document.getElementById('quiz-img');
-            if (currentQ.imgFront && currentQ.imgFront.trim() !== '') {
-                imgEl.src = currentQ.imgFront;
-                imgContainer.classList.remove('hidden');
-            } else {
-                imgContainer.classList.add('hidden');
-                imgEl.src = '';
-            }
+            const images = getCardImages(currentQ);
+            renderQuizImage(images);
 
             let correctAnswer = currentQ.answerTitle || '';
             let options = [correctAnswer];
@@ -777,51 +1094,129 @@
             return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
-        window.previewLocalImage = function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // Gestione upload multiplo fino a 100 MB per singolo item
+        window.previewLocalImages = function(event) {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
 
-            if (!file.type || !file.type.startsWith('image/')) {
-                showModalAlert("Per favore, seleziona un file immagine valido.");
+            const validFiles = files.filter(f => f.type && f.type.startsWith('image/'));
+            if (validFiles.length === 0) {
+                showModalAlert("Per favore, seleziona file immagine validi.");
                 event.target.value = '';
                 return;
             }
 
-            document.getElementById('file-name-front').innerText = file.name;
+            const incomingRawBytes = validFiles.reduce((acc, f) => acc + f.size, 0);
+            const currentBytes = getImagesTotalBytes(formImages);
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
-                    let width = img.width;
-                    let height = img.height;
+            if (currentBytes + incomingRawBytes > MAX_ITEM_BYTES) {
+                showModalAlert(`Capacità massima superata: il limite è di 100 MB per ogni item (attuale: ${formatMB(currentBytes)} MB, selezionati: ${formatMB(incomingRawBytes)} MB).`);
+                event.target.value = '';
+                return;
+            }
 
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
+            let processedCount = 0;
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        // Risoluzione elevata preservata fino a 1920px per dettaglio Intel superiore
+                        const MAX_WIDTH = 1920;
+                        const MAX_HEIGHT = 1920;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
                         }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
 
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-                    document.getElementById('input-img-front-data').value = dataUrl;
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                        const newTotal = getImagesTotalBytes(formImages) + dataUrl.length;
+
+                        if (newTotal <= MAX_ITEM_BYTES) {
+                            formImages.push(dataUrl);
+                        } else {
+                            showModalAlert("Raggiunto il limite massimo di 100 MB per questo item. Alcune immagini non sono state aggiunte.");
+                        }
+
+                        processedCount++;
+                        if (processedCount === validFiles.length) {
+                            renderFormImagesPreview();
+                            event.target.value = '';
+                        }
+                    };
+                    img.onerror = function() {
+                        // Fallback diretto se il formato non è ridimensionabile via canvas
+                        const rawUrl = e.target.result;
+                        if (getImagesTotalBytes(formImages) + rawUrl.length <= MAX_ITEM_BYTES) {
+                            formImages.push(rawUrl);
+                        }
+                        processedCount++;
+                        if (processedCount === validFiles.length) {
+                            renderFormImagesPreview();
+                            event.target.value = '';
+                        }
+                    };
+                    img.src = e.target.result;
                 };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            });
+        };
+
+        function renderFormImagesPreview() {
+            const container = document.getElementById('form-images-preview');
+            const labelInfo = document.getElementById('file-name-front');
+            const clearBtn = document.getElementById('clear-images-btn');
+            const sizeBadge = document.getElementById('form-size-badge');
+
+            const totalBytes = getImagesTotalBytes(formImages);
+            sizeBadge.innerText = `${formatMB(totalBytes)} / 100 MB`;
+
+            if (formImages.length === 0) {
+                container.innerHTML = '';
+                labelInfo.innerText = "Nessuna immagine selezionata (fino a 100 MB)";
+                clearBtn.classList.add('hidden');
+                return;
+            }
+
+            labelInfo.innerText = `${formImages.length} ${formImages.length === 1 ? 'immagine pronta' : 'immagini pronte'} (puoi aggiungerne altre)`;
+            clearBtn.classList.remove('hidden');
+
+            container.innerHTML = formImages.map((src, idx) => `
+                <div class="relative group rounded-lg overflow-hidden border border-gray-700 bg-gray-900 aspect-square">
+                    <img src="${src}" alt="Anteprima ${idx + 1}" class="w-full h-full object-cover">
+                    <span class="absolute bottom-1 left-1 bg-black/75 text-white text-[9px] px-1.5 rounded">${idx + 1}</span>
+                    <button type="button" onclick="removeFormImage(${idx})" class="absolute top-1 right-1 bg-red-600/90 hover:bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] shadow transition" title="Rimuovi immagine">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.removeFormImage = function(idx) {
+            formImages.splice(idx, 1);
+            renderFormImagesPreview();
+        };
+
+        window.clearFormImages = function() {
+            formImages = [];
+            document.getElementById('input-img-front-file').value = '';
+            renderFormImagesPreview();
         };
 
         window.updateStudyView = function() {
@@ -873,15 +1268,8 @@
             document.getElementById('card-answer-title').innerText = card.answerTitle || '';
             document.getElementById('card-answer-text').innerText = card.answerText || '';
 
-            const imgFrontCont = document.getElementById('card-img-front-container');
-            const imgFront = document.getElementById('card-img-front');
-            if (card.imgFront && card.imgFront.trim() !== '') {
-                imgFront.src = card.imgFront;
-                imgFrontCont.classList.remove('hidden');
-            } else {
-                imgFrontCont.classList.add('hidden');
-                imgFront.src = '';
-            }
+            const images = getCardImages(card);
+            renderStudyCardImages(images);
 
             document.getElementById('current-index').innerText = currentIndex + 1;
             document.getElementById('total-cards').innerText = total;
@@ -922,10 +1310,146 @@
             }
         };
 
+        /**
+         * Salva un item su Firestore suddividendo automaticamente le immagini in chunk
+         * se la dimensione totale supera il limite standard di 1MB per documento Firestore,
+         * supportando fino a 100 MB per singolo item.
+         */
+        async function saveCardToFirestore(colRef, chunksColRef, existingId, baseFields, imagesArray) {
+            const totalBytes = getImagesTotalBytes(imagesArray);
+            const docRef = existingId ? doc(colRef, existingId) : doc(colRef);
+            const cardId = docRef.id;
+
+            // Elimina eventuali vecchi chunk associati a questo cardId
+            const oldChunksSnap = await getDocs(query(chunksColRef, where('cardId', '==', cardId)));
+            if (!oldChunksSnap.empty) {
+                const delBatch = writeBatch(db);
+                oldChunksSnap.forEach(d => delBatch.delete(d.ref));
+                await delBatch.commit();
+            }
+
+            if (totalBytes <= FIRESTORE_CHUNK_SIZE) {
+                await setDoc(docRef, {
+                    ...baseFields,
+                    images: imagesArray,
+                    imgFront: imagesArray.length > 0 ? imagesArray[0] : '',
+                    hasChunks: false
+                });
+            } else {
+                // Salva i metadati nel documento principale e suddivide le immagini in chunk da 700KB
+                await setDoc(docRef, {
+                    ...baseFields,
+                    images: [],
+                    imgFront: '',
+                    hasChunks: true,
+                    totalImages: imagesArray.length
+                });
+
+                let batch = writeBatch(db);
+                let opsInBatch = 0;
+
+                for (let imgIdx = 0; imgIdx < imagesArray.length; imgIdx++) {
+                    const imgStr = imagesArray[imgIdx];
+                    let chunkIdx = 0;
+                    for (let offset = 0; offset < imgStr.length; offset += FIRESTORE_CHUNK_SIZE) {
+                        const slice = imgStr.slice(offset, offset + FIRESTORE_CHUNK_SIZE);
+                        const chunkDocRef = doc(chunksColRef);
+                        batch.set(chunkDocRef, {
+                            cardId: cardId,
+                            imgIndex: imgIdx,
+                            chunkIndex: chunkIdx,
+                            data: slice
+                        });
+                        chunkIdx++;
+                        opsInBatch++;
+
+                        // Limite di 500 operazioni per singolo writeBatch su Firestore
+                        if (opsInBatch >= 400) {
+                            await batch.commit();
+                            batch = writeBatch(db);
+                            opsInBatch = 0;
+                        }
+                    }
+                }
+
+                if (opsInBatch > 0) {
+                    await batch.commit();
+                }
+            }
+        }
+
+        // Save / Update Card
+        window.saveCard = async function(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-id').value;
+            const category = document.getElementById('input-category').value.trim();
+            const question = document.getElementById('input-question').value.trim();
+            const answerTitle = document.getElementById('input-answer-title').value.trim();
+            const answerText = document.getElementById('input-answer-text').value.trim();
+
+            const savedImages = [...formImages];
+            const totalBytes = getImagesTotalBytes(savedImages);
+
+            if (totalBytes > MAX_ITEM_BYTES) {
+                showModalAlert(`Dimensione massima superata (${formatMB(totalBytes)} MB / 100 MB). Riduci il peso delle immagini.`);
+                return;
+            }
+
+            const submitBtn = document.getElementById('submit-card-btn');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i>Salvataggio (${formatMB(totalBytes)} MB)...`;
+
+            const baseFields = {
+                category,
+                question,
+                answerTitle,
+                answerText
+            };
+
+            const fullCardData = {
+                ...baseFields,
+                images: savedImages,
+                imgFront: savedImages.length > 0 ? savedImages[0] : ''
+            };
+
+            try {
+                if (db && user) {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'nucleo-intel-shared-app';
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_cards');
+                    const chunksColRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_card_chunks');
+
+                    await saveCardToFirestore(colRef, chunksColRef, editId || null, baseFields, savedImages);
+                    showNotification(editId ? "Voce Intel aggiornata online per tutti" : "Nuova voce pubblicata nel cloud condiviso", "success");
+                } else {
+                    if (editId) {
+                        const card = cards.find(c => c.id === editId);
+                        if (card) Object.assign(card, fullCardData);
+                    } else {
+                        cards.push({ id: Date.now().toString(), ...fullCardData });
+                    }
+                    await saveCardsToLocalIDB(cards);
+                    updateCategorySelects();
+                    updateStudyView();
+                    renderManageList();
+                    showNotification("Voce salvata nel database ad alta capacità", "success");
+                }
+
+                resetForm();
+            } catch (err) {
+                console.error(err);
+                showModalAlert("Errore durante il salvataggio dei dati: " + (err.message || "Verifica la connessione o lo spazio disponibile."));
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalBtnText;
+            }
+        };
+
         window.nextCard = function() {
             const filteredCards = getFilteredCards();
             if (filteredCards.length === 0) return;
             currentIndex = (currentIndex + 1) % filteredCards.length;
+            currentImageIndex = 0;
             updateStudyView();
         };
 
@@ -933,6 +1457,7 @@
             const filteredCards = getFilteredCards();
             if (filteredCards.length === 0) return;
             currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+            currentImageIndex = 0;
             updateStudyView();
         };
 
@@ -946,62 +1471,6 @@
             nextCard();
         };
 
-        window.saveCard = async function(e) {
-            e.preventDefault();
-            const editId = document.getElementById('edit-id').value;
-            const category = document.getElementById('input-category').value.trim();
-            const question = document.getElementById('input-question').value.trim();
-            const answerTitle = document.getElementById('input-answer-title').value.trim();
-            const answerText = document.getElementById('input-answer-text').value.trim();
-            let imgFront = document.getElementById('input-img-front-data').value;
-
-            if (editId && !imgFront) {
-                const existing = cards.find(c => c.id === editId);
-                if (existing) imgFront = existing.imgFront || '';
-            }
-
-            const cardData = {
-                category,
-                question,
-                imgFront: imgFront || '',
-                answerTitle,
-                answerText
-            };
-
-            try {
-                if (db && user) {
-                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'nucleo-intel-shared-app';
-                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_cards');
-
-                    if (editId) {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'intel_cards', editId);
-                        await setDoc(docRef, cardData, { merge: true });
-                        showNotification("Voce Intel aggiornata online per tutti", "success");
-                    } else {
-                        await addDoc(colRef, cardData);
-                        showNotification("Nuova voce pubblicata nel cloud condiviso", "success");
-                    }
-                } else {
-                    if (editId) {
-                        const card = cards.find(c => c.id === editId);
-                        if (card) Object.assign(card, cardData);
-                    } else {
-                        cards.push({ id: Date.now().toString(), ...cardData });
-                    }
-                    localStorage.setItem('nucleo_intel_cards', JSON.stringify(cards));
-                    updateCategorySelects();
-                    updateStudyView();
-                    renderManageList();
-                    showNotification("Voce salvata in locale", "success");
-                }
-
-                resetForm();
-            } catch (err) {
-                console.error(err);
-                showModalAlert("Errore di salvataggio: L'immagine potrebbe essere troppo pesante.");
-            }
-        };
-
         window.editCard = function(id) {
             const card = cards.find(c => c.id === id);
             if (!card) return;
@@ -1010,8 +1479,9 @@
             document.getElementById('input-question').value = card.question;
             document.getElementById('input-answer-title').value = card.answerTitle || '';
             document.getElementById('input-answer-text').value = card.answerText || '';
-            document.getElementById('input-img-front-data').value = card.imgFront || '';
-            document.getElementById('file-name-front').innerText = card.imgFront ? 'Immagine presente' : 'Nessun file selezionato';
+            
+            formImages = [...getCardImages(card)];
+            renderFormImagesPreview();
             
             document.getElementById('form-title').innerHTML = `<i class="fa-solid fa-pen-to-square mr-2 text-military-600"></i>Modifica Voce Intel`;
             document.getElementById('cancel-edit').classList.remove('hidden');
@@ -1024,11 +1494,21 @@
                     if (db && user) {
                         const appId = typeof __app_id !== 'undefined' ? __app_id : 'nucleo-intel-shared-app';
                         const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'intel_cards', id);
+                        const chunksColRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_card_chunks');
+                        
+                        // Pulizia eventuale dei chunk collegati
+                        const chunksSnap = await getDocs(query(chunksColRef, where('cardId', '==', id)));
+                        if (!chunksSnap.empty) {
+                            const delBatch = writeBatch(db);
+                            chunksSnap.forEach(d => delBatch.delete(d.ref));
+                            await delBatch.commit();
+                        }
+
                         await deleteDoc(docRef);
                         showNotification("Voce eliminata dal database cloud", "warning");
                     } else {
                         cards = cards.filter(c => c.id !== id);
-                        localStorage.setItem('nucleo_intel_cards', JSON.stringify(cards));
+                        await saveCardsToLocalIDB(cards);
                         updateCategorySelects();
                         updateStudyView();
                         renderManageList();
@@ -1046,12 +1526,13 @@
         window.resetForm = function() {
             document.getElementById('card-form').reset();
             document.getElementById('edit-id').value = "";
-            document.getElementById('input-img-front-data').value = "";
-            document.getElementById('file-name-front').innerText = "Nessun file selezionato";
+            formImages = [];
+            renderFormImagesPreview();
             document.getElementById('form-title').innerHTML = `<i class="fa-solid fa-plus-circle mr-2 text-military-600"></i>Inserisci Nuova Voce Intel (Database Condiviso)`;
             document.getElementById('cancel-edit').classList.add('hidden');
         };
 
+        // Import / Export JSON
         window.exportDatabase = function() {
             if (!cards || cards.length === 0) {
                 showModalAlert("Il database è attualmente vuoto, nessun dato da esportare.");
@@ -1096,31 +1577,40 @@
                             if (db && user) {
                                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'nucleo-intel-shared-app';
                                 const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_cards');
+                                const chunksColRef = collection(db, 'artifacts', appId, 'public', 'data', 'intel_card_chunks');
                                 
                                 const snapshot = await getDocs(colRef);
                                 const deletePromises = snapshot.docs.map(docSnap => deleteDoc(docSnap.ref));
                                 await Promise.all(deletePromises);
 
+                                const chunkSnapshot = await getDocs(chunksColRef);
+                                const delChunkPromises = chunkSnapshot.docs.map(docSnap => deleteDoc(docSnap.ref));
+                                await Promise.all(delChunkPromises);
+
                                 for (let c of importedCards) {
-                                    await addDoc(colRef, {
+                                    const imgs = getCardImages(c);
+                                    await saveCardToFirestore(colRef, chunksColRef, null, {
                                         category: c.category || 'Generale',
                                         question: c.question || '',
-                                        imgFront: c.imgFront || '',
                                         answerTitle: c.answerTitle || c.answer || '',
                                         answerText: c.answerText || ''
-                                    });
+                                    }, imgs);
                                 }
                                 showNotification("Database sovrascritto nel Cloud con successo!", "success");
                             } else {
-                                cards = importedCards.map(c => ({
-                                    id: c.id || Date.now().toString() + Math.random().toString(36).substr(2, 4),
-                                    category: c.category || 'Generale',
-                                    question: c.question || '',
-                                    imgFront: c.imgFront || '',
-                                    answerTitle: c.answerTitle || c.answer || '',
-                                    answerText: c.answerText || ''
-                                }));
-                                localStorage.setItem('nucleo_intel_cards', JSON.stringify(cards));
+                                cards = importedCards.map(c => {
+                                    const imgs = getCardImages(c);
+                                    return {
+                                        id: c.id || Date.now().toString() + Math.random().toString(36).substr(2, 4),
+                                        category: c.category || 'Generale',
+                                        question: c.question || '',
+                                        images: imgs,
+                                        imgFront: imgs.length > 0 ? imgs[0] : '',
+                                        answerTitle: c.answerTitle || c.answer || '',
+                                        answerText: c.answerText || ''
+                                    };
+                                });
+                                await saveCardsToLocalIDB(cards);
                                 updateCategorySelects();
                                 updateStudyView();
                                 renderManageList();
@@ -1159,13 +1649,18 @@
                     statusBadge = `<span class="bg-gray-700 text-gray-300 text-[10px] px-2 py-0.5 rounded">Nuova</span>`;
                 }
 
+                const imgs = getCardImages(c);
+                const photoBadge = imgs.length > 0 
+                    ? `<span class="bg-blue-950 text-blue-300 border border-blue-800 text-[10px] px-2 py-0.5 rounded"><i class="fa-solid fa-images mr-1"></i>${imgs.length} ${imgs.length === 1 ? 'Foto' : 'Foto'}</span>` 
+                    : '';
+
                 return `
                     <div class="bg-gray-900 border border-gray-700 rounded-lg p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5">
                         <div class="space-y-1 max-w-md">
                             <div class="flex items-center space-x-2 flex-wrap gap-y-1">
                                 <span class="text-[11px] bg-military-800 text-military-200 border border-military-600 px-2 py-0.5 rounded font-medium">${escapeHtml(c.category)}</span>
                                 ${statusBadge}
-                                ${c.imgFront ? '<span class="bg-blue-950 text-blue-300 border border-blue-800 text-[10px] px-2 py-0.5 rounded"><i class="fa-solid fa-image mr-1"></i>Foto</span>' : ''}
+                                ${photoBadge}
                             </div>
                             <h4 class="text-xs sm:text-sm font-semibold text-white">${escapeHtml(c.question)}</h4>
                             <p class="text-[11px] text-red-400 font-bold line-clamp-1">${escapeHtml(c.answerTitle || '')}</p>
